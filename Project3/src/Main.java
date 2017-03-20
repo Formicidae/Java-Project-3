@@ -154,11 +154,11 @@ public class Main {
             System.out.println("\n1) Reserve Seats \n" + "2) View Auditorium \n" + "3) Exit");
             switch(input.nextInt()){
                 case 1:
-
+                    System.out.println(middleRow + " " + middleSeat);
                     System.out.println("Which row, seat and how many tickets would you like?");
                     //Add Validation for each number
-                    int row = input.nextInt();
-                    int seat = input.nextInt();
+                    int row = input.nextInt() - 1;
+                    int seat = input.nextInt() - 1;
                     int num = input.nextInt();
                     if(checkAvalible(row,seat,num,aval)){
                         System.out.println("Avalible");
@@ -179,7 +179,7 @@ public class Main {
                                     bestS = cur.getSeat();
                                 }
                             }
-                            
+                            cur = cur.getNext();
                         }
                         System.out.println("Would you like seat: " + bestS + " row: " + bestR + " ?");
                         char yn = input.next().charAt(0);
@@ -203,12 +203,9 @@ public class Main {
             }
         }
         
+        printAuditorium();
         
-        
-        
-        
-        
-        
+        /*
         DoubleLinkNode cur = A1Available.getHead();
         while(cur.getNext() != null){
             System.out.println(cur.getRow() + " " + cur.getSeat());
@@ -225,7 +222,7 @@ public class Main {
         System.out.println(checkAvalible(1,1,5,A1Available));
         System.out.println(checkAvalible(4,9,5,A1Available));
         System.out.println(checkAvalible(3,5,5,A1Available));
-
+        */
     }
     
     public static boolean checkAvalible(int row, int seat, int num, LinkedList A){
