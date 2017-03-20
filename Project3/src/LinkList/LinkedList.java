@@ -30,9 +30,37 @@ public class LinkedList {
         if(head == null){
             head = new DoubleLinkNode(r,s,tail,null);
             tail = head;
+            return;
+        }
+        DoubleLinkNode cur = head;
+        while(cur.getNext() != null){
+            if(cur.getRow() >= r){
+                if(cur.getSeat() > s){
+                    DoubleLinkNode newN = new DoubleLinkNode(r,s,cur,cur.getPrev());
+                    cur.getPrev().setNext(newN);
+                    cur.setPrev(newN);
+                    return;
+                }
+            }
+            cur = cur.getNext();
         }
         tail.setNext(new DoubleLinkNode(r,s,null,tail));
         tail = tail.getNext();
+    }
+
+    public void deleteNode(int r, int s){
+        DoubleLinkNode cur = head;
+        while(cur.getNext() != null){
+            if(cur.getRow() == r){
+                if(cur.getSeat() == s){
+                    cur.getPrev().setNext(cur.getNext());
+                    cur.getNext().setPrev(cur.getPrev());
+                    System.out.println("deleted");
+                    return;
+                }
+            }
+            cur = cur.getNext();
+        }
     }
     
     public DoubleLinkNode getHead() {

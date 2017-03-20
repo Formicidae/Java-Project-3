@@ -22,8 +22,8 @@ public class DoubleLinkNode extends BaseNode{
     public DoubleLinkNode(int r, int s, DoubleLinkNode n,DoubleLinkNode p){
         setRow(r);
         setSeat(s);
-        next = null;
-        prev = null;
+        next = n;
+        prev = p;
     }
 
     public DoubleLinkNode getNext() {
