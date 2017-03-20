@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Scanner;
 import LinkList.LinkedList;
 import LinkList.DoubleLinkNode;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,6 +27,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        FileOutputStream out = null;
         LinkedList A1Available = new LinkedList(new DoubleLinkNode());
         LinkedList A1Reserved = new LinkedList(new DoubleLinkNode());
         try {
@@ -113,19 +118,31 @@ public class Main {
                         aval = A1Available;
                         res = A1Reserved;
                         aud = false;
-                        //printAuditorium(res,aval);
+                        try {
+                            out = new FileOutputStream("A1.txt");
+                        } catch (FileNotFoundException ex) {
+                            System.out.println("File not found" + ex);
+                        }
                         break;
                     case 2:
                         aval = A2Available;
                         res = A2Reserved;
                         aud = false;
-                        //printAuditorium(res,aval);
+                        try {
+                            out = new FileOutputStream("A2.txt");
+                        } catch (FileNotFoundException ex) {
+                            System.out.println("File not found" + ex);
+                        }
                         break;
                     case 3:
                         aval = A3Available;
                         res = A3Reserved;
                         aud = false;
-                        //printAuditorium(res,aval);
+                        try {
+                            out = new FileOutputStream("A3.txt");
+                        } catch (FileNotFoundException ex) {
+                            System.out.println("File not found" + ex);
+                        }
                         break;
                     default:
                         System.out.println("Invalid Auditorium");
@@ -203,26 +220,11 @@ public class Main {
             }
         }
         
-        printAuditorium();
-        
-        /*
-        DoubleLinkNode cur = A1Available.getHead();
-        while(cur.getNext() != null){
-            System.out.println(cur.getRow() + " " + cur.getSeat());
-            cur = cur.getNext();
+        try {
+            printAuditorium(res,aval,out);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-         cur = A1Reserved.getHead();
-        while(cur.getNext() != null){
-            System.out.println(cur.getRow() + " " + cur.getSeat());
-            cur = cur.getNext();
-        }
-        System.out.println("Checking aval");
-        System.out.println(checkAvalible(0,1,10,A1Available));
-        System.out.println(checkAvalible(1,1,5,A1Available));
-        System.out.println(checkAvalible(4,9,5,A1Available));
-        System.out.println(checkAvalible(3,5,5,A1Available));
-        */
     }
     
     public static boolean checkAvalible(int row, int seat, int num, LinkedList A){
@@ -267,14 +269,14 @@ public class Main {
         }
         return dis;
     }
-    public static void printAuditorium(LinkedList Res,LinkedList Aval){
+    public static void printAuditorium(LinkedList Res,LinkedList Aval,FileOutputStream out) throws IOException{
         int tmprow = 2147483647;
         DoubleLinkNode a = Aval.getHead();
         DoubleLinkNode r = Res.getHead();
         while(true){
             //System.out.println(a.getRow() + " " + a.getSeat() + "\n" + r.getRow() + " " + r.getSeat());
             if(a.getRow() <= r.getRow() && (a.getSeat() < r.getSeat() || a.getRow() < r.getRow())){
-                System.out.print("#");
+                out.write('#');
                 tmprow = a.getRow();
                 if(a.getNext() != null){
                     a = a.getNext();
@@ -287,7 +289,7 @@ public class Main {
                 }
             }
             else if(r.getRow() <= a.getRow() && (r.getSeat() < a.getSeat() || r.getRow() < a.getRow())){
-                System.out.print(".");
+                out.write('.');
                 tmprow = r.getRow();
                 if(r.getNext() != null){
                     //System.out.print("next");
@@ -304,7 +306,8 @@ public class Main {
             //check if row has changed
             if(a.getRow() > tmprow && r.getRow() > tmprow){
                 tmprow = 2147483647;
-                System.out.print("\n");
+                out.write('\r');
+                out.write('\n');
             }
         }
       
