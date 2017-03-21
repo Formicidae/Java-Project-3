@@ -9,33 +9,25 @@ import java.io.FileOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 /**
  *
- * @author Eddie
+ * @author Eddie Bates emb160030
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
+        //creates empty linklists
         FileOutputStream out = null;
         LinkedList A1Available = new LinkedList(new DoubleLinkNode());
         LinkedList A1Reserved = new LinkedList(new DoubleLinkNode());
+        //looks for first file and reads it
         try {
             File A1f = new File("A1.txt");
             Scanner A1 = new Scanner(A1f);
             int row = 0;
             A1Available = new LinkedList();
             A1Reserved = new LinkedList();
+            //goes character by character and if it's # adds it to avalible if not adds to reserve
             while(A1.hasNextLine()){
                 String line = A1.nextLine();
 		for(int i = 0; i < line.length();i++){
@@ -56,12 +48,14 @@ public class Main {
         
         LinkedList A2Available = new LinkedList(new DoubleLinkNode());
         LinkedList A2Reserved = new LinkedList(new DoubleLinkNode());
+        //opens and reads file
         try {
             File A2f = new File("A2.txt");
             Scanner A2 = new Scanner(A2f);
             int row = 0;
             A2Available = new LinkedList();
             A2Reserved = new LinkedList();
+            //goes character by character and if it's # adds it to avalible if not adds to reserve
             while(A2.hasNextLine()){
                 String line = A2.nextLine();
 		for(int i = 0; i < line.length();i++){
@@ -82,12 +76,14 @@ public class Main {
         
         LinkedList A3Available = new LinkedList(new DoubleLinkNode());
         LinkedList A3Reserved = new LinkedList(new DoubleLinkNode());
+        //Opens and reads file which checking for it not existing
         try {
             File A3f = new File("A3.txt");
             Scanner A3 = new Scanner(A3f);
             int row = 0;
             A3Available = new LinkedList();
             A3Reserved = new LinkedList();
+            //goes character by character and if it's # adds it to avalible if not adds to reserve
             while(A3.hasNextLine()){
                 String line = A3.nextLine();
 		for(int i = 0; i < line.length();i++){
@@ -106,13 +102,16 @@ public class Main {
              System.out.println("File not found" + e);
         }
         
+        //Creates only input scanner
         Scanner input = new Scanner(System.in);
         
         LinkedList aval = null;
         LinkedList res = null;
         boolean aud = true;
+        //lops until valid auditorium is chosen
         while(aud){
-            System.out.println("Which Auditorium?");    
+            System.out.println("Which Auditorium?");
+                //When auditorium is selected it asigns realavent aval and res link list aswell as file to output to
                 switch(input.nextInt()){
                     case 1:
                         aval = A1Available;
@@ -167,6 +166,7 @@ public class Main {
             middleSeat = res.getTail().getSeat() / 2;
         }
         
+        //Loops for valid input for main menu
         boolean running = true;        
         while(running){
             System.out.println("\n1) Reserve Seats \n" + "2) View Auditorium \n" + "3) Exit");
@@ -175,7 +175,7 @@ public class Main {
                     int row = 0;
                     int seat = 0;
                     int num = 0;
-                    System.out.println(middleRow + " " + middleSeat);
+                    //Loops and validates row , seat and num
                     boolean seating = true;
                     while(seating){
                         System.out.println("Which row would you like?");
@@ -197,6 +197,7 @@ public class Main {
                         if(num >= 0)
                             seating = false;
                     }
+                    //once seat position is validated avalibility is checked and seats are reserved if avalible and better ones are found if not
                     if(checkAvalible(row,seat,num,aval)){
                         System.out.println("Avalible");
                         reserveSeats(row,seat,num,res,aval);
@@ -208,6 +209,7 @@ public class Main {
                         int bestR = 2147483647;
                         int bestS = 2147483647;
                         
+                        //looks though open seats to find the closest to the middle
                         DoubleLinkNode cur = aval.getHead();
                         while(cur.getNext() != null){
                             if(distance(bestR, bestS, middleRow, middleSeat) > distance(cur.getRow(), cur.getSeat(), middleRow, middleSeat)){
@@ -218,6 +220,7 @@ public class Main {
                             }
                             cur = cur.getNext();
                         }
+                        //asks user if they want the seats and if so reserves them
                         System.out.println("Would you like seat: " + bestS + " row: " + bestR + " ?");
                         char yn = input.next().charAt(0);
                         if(yn == 'Y' || yn == 'y'){
@@ -235,11 +238,13 @@ public class Main {
                     viewAuditorium(res,aval);
                     break;
                 case 3:
+                    //end input loop
                     running = false;
                     break;
             }
         }
         
+        //atempt to print aud to file
         try {
             printAuditorium(res,aval,out);
             System.out.println("Printed");
@@ -251,9 +256,11 @@ public class Main {
     
     public static boolean checkAvalible(int row, int seat, int num, LinkedList A){
         DoubleLinkNode cur = A.getHead();
+        //Finds starting seat in avalible
         while(cur != null){
             if(cur.getRow() == row){
                 if(cur.getSeat() == seat){
+                    //sees if the requested number of seats are avalible after starting seat, if not returns false
                     for(int i = 0;i < num;i++){
                         if(cur.getRow() == row){
                             if(cur.getSeat() == seat + i){     
@@ -276,15 +283,15 @@ public class Main {
     }
     
     public static void reserveSeats(int row,int seat,int num,LinkedList Res,LinkedList Aval){
+        //reserves as many seats as needs most logic handled by linkedlist class
         for(int i = 0; i < num; i++){
-            System.out.println("reserving");
             Res.addNode(row, seat + i);
-            System.out.println("Now deleting: " + row + " " + seat);
             Aval.deleteNode(row, seat + i);
         }
     }
     
     public static double distance(int row, int seat, int mr, int ms){
+        //uses standard distance formula to find distance fron point (usaully middle seat)
         double dis = Math.sqrt(Math.pow(Math.abs((double)row - (double)mr),2) + Math.pow(Math.abs((double)seat - (double)ms),2));
         if(row == mr){
             //Tie breaker
@@ -292,30 +299,33 @@ public class Main {
         }
         return dis;
     }
+    //Print method for file, same as view aud but doesnt have line numbers
     public static void printAuditorium(LinkedList Res,LinkedList Aval,FileOutputStream out) throws IOException{
         int tmprow = 2147483647;
         DoubleLinkNode a = Aval.getHead();
         DoubleLinkNode r = Res.getHead();
         while(true){
-            //System.out.println(a.getRow() + " " + a.getSeat() + "\n" + r.getRow() + " " + r.getSeat());
+            //looks for smallest seat value
             if(a.getRow() <= r.getRow() && (a.getSeat() < r.getSeat() || a.getRow() < r.getRow())){
                 out.write('#');
                 tmprow = a.getRow();
+                //goes to next node if it exists
                 if(a.getNext() != null){
                     a = a.getNext();
                 }
                 else{
+                    //if it is last node it is set for max int value to make sure reserved finishes
                     if(r.getRow() == 2147483647){
                         return;
                     }
                     a = new DoubleLinkNode(2147483647,2147483647,null,null);
                 }
             }
+            //if smallest value is not in avalible it checks reserved
             else if(r.getRow() <= a.getRow() && (r.getSeat() < a.getSeat() || r.getRow() < a.getRow())){
                 out.write('.');
                 tmprow = r.getRow();
                 if(r.getNext() != null){
-                    //System.out.print("next");
                     r = r.getNext();
                 }
                 else{
@@ -336,9 +346,11 @@ public class Main {
       
     }
     
+    //same as printAuditorium but adds row ans seat nubmers for user
     public static void viewAuditorium(LinkedList Res,LinkedList Aval){
         System.out.print("  ");
         int rowLength = 0;
+        //finds which tail is the end to get biggest seat and row value
         if(Aval.getTail().getSeat() > Res.getTail().getSeat()){
             rowLength = Aval.getTail().getSeat();
         }
@@ -354,7 +366,7 @@ public class Main {
         DoubleLinkNode a = Aval.getHead();
         DoubleLinkNode r = Res.getHead();
         while(true){
-            //System.out.println(a.getRow() + " " + a.getSeat() + "\n" + r.getRow() + " " + r.getSeat());
+            //looks for smallest not printed seat and ditirmiens which array it is in
             if(a.getRow() <= r.getRow() && (a.getSeat() < r.getSeat() || a.getRow() < r.getRow())){
                 System.out.print("#");
                 tmprow = a.getRow();
@@ -369,6 +381,7 @@ public class Main {
                 }
             }
             else if(r.getRow() <= a.getRow() && (r.getSeat() < a.getSeat() || r.getRow() < a.getRow())){
+                //if smallest not printed seat is in reserved it is printed as .
                 System.out.print(".");
                 tmprow = r.getRow();
                 if(r.getNext() != null){
