@@ -220,8 +220,13 @@ public class Main {
                             }
                             cur = cur.getNext();
                         }
+                        //Checks if no seats were found
+                        if(bestR == 2147483647 || bestS == 2147483647){
+                            System.out.println("That many seats cannot be found");
+                            break;
+                        }
                         //asks user if they want the seats and if so reserves them
-                        System.out.println("Would you like seat: " + bestS + " row: " + bestR + " ?");
+                        System.out.println("Would you like row: " + (bestR + 1) + " seat: " + (bestS + 1) + " ?");
                         char yn = input.next().charAt(0);
                         if(yn == 'Y' || yn == 'y'){
                             reserveSeats(bestR,bestS,num,res,aval);
@@ -273,6 +278,10 @@ public class Main {
                             return false;
                         }
                         cur = cur.getNext();
+                        //Ends if it cur goes out of bounds
+                        if(cur == null){
+                            return false;
+                        }
                     }
                     return true;
                 }
