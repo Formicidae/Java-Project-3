@@ -150,6 +150,7 @@ public class Main {
                 }
         }
         
+        //Calculate middle seat for later use in finding best avalible
         int middleRow;
         if(aval.getTail().getRow() > res.getTail().getRow()){
             middleRow = aval.getTail().getRow() / 2;
@@ -171,12 +172,31 @@ public class Main {
             System.out.println("\n1) Reserve Seats \n" + "2) View Auditorium \n" + "3) Exit");
             switch(input.nextInt()){
                 case 1:
+                    int row = 0;
+                    int seat = 0;
+                    int num = 0;
                     System.out.println(middleRow + " " + middleSeat);
-                    System.out.println("Which row, seat and how many tickets would you like?");
-                    //Add Validation for each number
-                    int row = input.nextInt() - 1;
-                    int seat = input.nextInt() - 1;
-                    int num = input.nextInt();
+                    boolean seating = true;
+                    while(seating){
+                        System.out.println("Which row would you like?");
+                        row = input.nextInt() - 1;
+                        if(row >= 0 && (row <= aval.getTail().getRow() + 1 || row <= res.getTail().getRow() + 1))
+                            seating = false;
+                    }
+                    seating = true;
+                    while(seating){
+                        System.out.println("Which seat would you like?");
+                        seat = input.nextInt() - 1;
+                        if(seat >= 0 &&( seat <= aval.getTail().getSeat() + 1 || seat < res.getTail().getSeat() + 1))
+                            seating = false;
+                    }
+                    seating = true;
+                    while(seating){
+                        System.out.println("How many seats would you like?");
+                        num = input.nextInt();
+                        if(num >= 0)
+                            seating = false;
+                    }
                     if(checkAvalible(row,seat,num,aval)){
                         System.out.println("Avalible");
                         reserveSeats(row,seat,num,res,aval);
@@ -222,6 +242,8 @@ public class Main {
         
         try {
             printAuditorium(res,aval,out);
+            System.out.println("Printed");
+            out.close();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -229,7 +251,7 @@ public class Main {
     
     public static boolean checkAvalible(int row, int seat, int num, LinkedList A){
         DoubleLinkNode cur = A.getHead();
-        while(cur.getNext() != null){
+        while(cur != null){
             if(cur.getRow() == row){
                 if(cur.getSeat() == seat){
                     for(int i = 0;i < num;i++){
@@ -257,6 +279,7 @@ public class Main {
         for(int i = 0; i < num; i++){
             System.out.println("reserving");
             Res.addNode(row, seat + i);
+            System.out.println("Now deleting: " + row + " " + seat);
             Aval.deleteNode(row, seat + i);
         }
     }

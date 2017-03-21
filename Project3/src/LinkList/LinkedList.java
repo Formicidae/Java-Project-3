@@ -32,10 +32,16 @@ public class LinkedList {
             tail = head;
             return;
         }
+        if(tail.getRow() < r || (tail.getRow() == r && tail.getSeat() < s)){
+            tail.setNext(new DoubleLinkNode(r,s,null,tail));
+            tail = tail.getNext();
+            System.out.println("End ADD    !");
+            return;
+        }
         DoubleLinkNode cur = head;
         while(cur.getNext() != null){
             if(cur.getRow() >= r){
-                if(cur.getSeat() > s){
+                if(cur.getSeat() > s || cur.getRow() > r){
                     DoubleLinkNode newN = new DoubleLinkNode(r,s,cur,cur.getPrev());
                     cur.getPrev().setNext(newN);
                     cur.setPrev(newN);
@@ -50,9 +56,20 @@ public class LinkedList {
 
     public void deleteNode(int r, int s){
         DoubleLinkNode cur = head;
-        while(cur.getNext() != null){
+        while(cur != null){
             if(cur.getRow() == r){
                 if(cur.getSeat() == s){
+                    if(cur == head){
+                        head = head.getNext();
+                        System.out.println("head deleted");
+                        return;
+                    }
+                    if(cur == tail){
+                        tail = tail.getPrev();
+                        tail.setNext(null);
+                        System.out.println("Tail deleted");
+                        return;
+                    }
                     cur.getPrev().setNext(cur.getNext());
                     cur.getNext().setPrev(cur.getPrev());
                     System.out.println("deleted");
